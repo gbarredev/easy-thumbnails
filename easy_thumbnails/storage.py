@@ -4,6 +4,20 @@ from django.utils.functional import LazyObject
 
 from easy_thumbnails.conf import settings
 
+def get_storage():
+    # If the user has specified a custom storage backend, use it.
+    if getattr(settings, "THUMBNAIL_DEFAULT_STORAGE", None):
+        try:
+            storage_class = get_storage_class(settings.THUMBNAIL_DEFAULT_STORAGE)
+            class ThumbnailDefaultStorage(LazyObject):
+                def _setup(self):
+                    self._wrapped = storage_class()
+            return ThumbnailDefaultStorage()
+        except (ImportError, TypeError):
+            from django.core.files.storage import storages
+            return storages[settings.THUMBNAIL_DEFAULT_STORAGE]
+    return None
+
 
 @deconstructible
 class ThumbnailFileSystemStorage(FileSystemStorage):
@@ -28,4 +42,4 @@ class ThumbnailDefaultStorage(LazyObject):
             settings.THUMBNAIL_DEFAULT_STORAGE)()
 
 
-thumbnail_default_storage = ThumbnailDefaultStorage()
+thumbnail_default_storage = get_storage()
