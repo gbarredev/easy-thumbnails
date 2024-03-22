@@ -1,7 +1,6 @@
 from django.core.files.storage import FileSystemStorage, get_storage_class
 from django.utils.deconstruct import deconstructible
 from django.utils.functional import LazyObject
-from django.conf import settings
 
 from easy_thumbnails.conf import settings
 
