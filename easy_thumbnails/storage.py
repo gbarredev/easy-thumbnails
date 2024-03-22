@@ -36,10 +36,4 @@ class ThumbnailFileSystemStorage(FileSystemStorage):
         super().__init__(location, base_url, *args, **kwargs)
 
 
-class ThumbnailDefaultStorage(LazyObject):
-    def _setup(self):
-        self._wrapped = get_storage_class(
-            settings.THUMBNAIL_DEFAULT_STORAGE)()
-
-
 thumbnail_default_storage = get_storage()
